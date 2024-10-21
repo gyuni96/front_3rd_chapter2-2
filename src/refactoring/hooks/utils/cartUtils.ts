@@ -60,6 +60,11 @@ export const updateCartItemQuantity = (
   productId: string,
   newQuantity: number
 ): CartItem[] => {
+  if (newQuantity === 0) {
+    // 수량이 0이면 삭제
+    return cart.filter((item) => item.product.id !== productId)
+  }
+
   return cart.map((item) =>
     item.product.id === productId
       ? { ...item, quantity: Math.min(newQuantity, item.product.stock) }
