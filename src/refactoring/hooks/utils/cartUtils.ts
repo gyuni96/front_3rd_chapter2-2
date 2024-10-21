@@ -1,7 +1,7 @@
 import { CartItem, Coupon } from "../../../types"
 
 /**
- * 아이템 가격을 계산합니다.
+ * 아이템 가격을 계산
  * @param item
  * @returns
  */
@@ -13,11 +13,16 @@ export const calculateItemTotal = (item: CartItem) => {
   return price * quantity * (1 - discount)
 }
 
+/**
+ * 최대 할인율 계산
+ * @param item
+ * @returns
+ */
 export const getMaxApplicableDiscount = (item: CartItem) => {
   const { discounts } = item.product
   const { quantity } = item
 
-  // 할인이 가장 큰 값을 찾아서 할인을 적용합니다.
+  // 할인이 가장 큰 값을 찾아서 할인을 적용
   const discount = discounts.reduce((maxDiscount, cur) => {
     return quantity >= cur.quantity && cur.rate > maxDiscount ? cur.rate : maxDiscount
   }, 0)
@@ -25,6 +30,12 @@ export const getMaxApplicableDiscount = (item: CartItem) => {
   return discount
 }
 
+/**
+ * 장바구니 총 가격 계산
+ * @param cart
+ * @param selectedCoupon
+ * @returns
+ */
 export const calculateCartTotal = (cart: CartItem[], selectedCoupon: Coupon | null) => {
   let totalBeforeDiscount = 0
   let totalAfterDiscount = 0
@@ -55,6 +66,13 @@ export const calculateCartTotal = (cart: CartItem[], selectedCoupon: Coupon | nu
   }
 }
 
+/**
+ * 장바구니 아이템 수량 업데이트
+ * @param cart
+ * @param productId
+ * @param newQuantity
+ * @returns
+ */
 export const updateCartItemQuantity = (
   cart: CartItem[],
   productId: string,
