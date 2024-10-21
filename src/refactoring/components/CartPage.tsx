@@ -91,7 +91,7 @@ export const CartPage = ({ products, coupons }: Props) => {
                     }`}
                     disabled={remainingStock <= 0}
                   >
-                    {remainingStock > 0 ? "장바구니에추가 " : "품절"}
+                    {remainingStock > 0 ? "장바구니에 추가 " : "품절"}
                   </button>
                 </div>
               )
