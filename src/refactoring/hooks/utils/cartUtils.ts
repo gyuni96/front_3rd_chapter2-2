@@ -6,7 +6,8 @@ import { CartItem, Coupon } from "../../../types"
  * @returns
  */
 export const calculateItemTotal = (item: CartItem) => {
-  const { price, discounts } = item.product
+export const getMaxApplicableDiscount = (item: CartItem) => {
+  const { discounts } = item.product
   const { quantity } = item
 
   // 할인이 가장 큰 값을 찾아서 할인을 적용합니다.
@@ -14,11 +15,7 @@ export const calculateItemTotal = (item: CartItem) => {
     return quantity >= cur.quantity && cur.rate > maxDiscount ? cur.rate : maxDiscount
   }, 0)
 
-  return price * quantity * (1 - discount)
-}
-
-export const getMaxApplicableDiscount = (item: CartItem) => {
-  return 0
+  return discount
 }
 
 export const calculateCartTotal = (cart: CartItem[], selectedCoupon: Coupon | null) => {
