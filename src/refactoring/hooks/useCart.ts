@@ -21,7 +21,9 @@ export const useCart = () => {
     setCart((prev) => prev.filter((item) => item.product.id !== productId))
   }
 
-  const updateQuantity = (productId: string, newQuantity: number) => {};
+  const updateQuantity = (productId: string, newQuantity: number) => {
+    setCart((prev) => updateCartItemQuantity(prev, productId, newQuantity))
+  }
 
   const applyCoupon = (coupon: Coupon) => {};
 
