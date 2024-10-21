@@ -22,12 +22,34 @@ export const getMaxApplicableDiscount = (item: CartItem) => {
 }
 
 export const calculateCartTotal = (cart: CartItem[], selectedCoupon: Coupon | null) => {
+  let totalBeforeDiscount = 0
+  let totalAfterDiscount = 0
+  let totalDiscount = 0
+  cart.forEach((item) => {
+    const { price } = item.product
+    const { quantity } = item
+
+    totalBeforeDiscount += price * quantity
+    totalAfterDiscount += calculateItemTotal(item)
+  })
+  totalDiscount = totalBeforeDiscount - totalAfterDiscount
+
+  if (selectedCoupon) {
+    // 선택된 쿠폰이있으면 할인해야댐
+    if (selectedCoupon.discountType === "amount") {
+      totalAfterDiscount = Math.max(0, totalAfterDiscount - selectedCoupon.discountValue)
+    } else {
+      totalAfterDiscount *= 1 - selectedCoupon.discountValue / 100
+    }
+    totalDiscount = totalBeforeDiscount - totalAfterDiscount
+  }
+
   return {
-    totalBeforeDiscount: 0,
-    totalAfterDiscount: 0,
-    totalDiscount: 0,
-  };
-};
+    totalBeforeDiscount: Math.round(totalBeforeDiscount), // 할인전 가격
+    totalAfterDiscount: Math.round(totalAfterDiscount), // 할인된 가격
+    totalDiscount: Math.round(totalDiscount), // 할인가격
+  }
+}
 
 export const updateCartItemQuantity = (cart: CartItem[], productId: string, newQuantity: number): CartItem[] => {
   return []
