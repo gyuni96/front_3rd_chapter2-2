@@ -11,11 +11,7 @@ export const useCart = () => {
     setCart((prev) => {
       const existingItem = prev.find((item) => item.product.id === product.id)
       if (existingItem) {
-        return prev.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: Math.min(item.quantity + 1, product.stock) }
-            : item
-        )
+        return updateCartItemQuantity(prev, product.id, existingItem.quantity + 1)
       }
       return [...prev, { product, quantity: 1 }]
     })
