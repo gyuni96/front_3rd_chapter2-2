@@ -37,20 +37,17 @@ export const getMaxApplicableDiscount = (item: CartItem) => {
  * @returns
  */
 export const calculateCartTotal = (cart: CartItem[], selectedCoupon: Coupon | null) => {
-  let totalBeforeDiscount = 0
-  let totalAfterDiscount = 0
-  let totalDiscount = 0
-  cart.forEach((item) => {
-    const { price } = item.product
-    const { quantity } = item
+  const totalBeforeDiscount = cart.reduce((total, item) => {
+    return total + item.product.price * item.quantity
+  }, 0)
 
-    totalBeforeDiscount += price * quantity
-    totalAfterDiscount += calculateItemTotal(item)
-  })
-  totalDiscount = totalBeforeDiscount - totalAfterDiscount
+  let totalAfterDiscount = cart.reduce((total, item) => {
+    return total + calculateItemTotal(item)
+  }, 0)
+
+  let totalDiscount = totalBeforeDiscount - totalAfterDiscount
 
   if (selectedCoupon) {
-    // 선택된 쿠폰이있으면 할인해야댐
     if (selectedCoupon.discountType === "amount") {
       totalAfterDiscount = Math.max(0, totalAfterDiscount - selectedCoupon.discountValue)
     } else {
