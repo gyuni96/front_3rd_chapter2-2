@@ -79,9 +79,9 @@ describe("advanced > ", () => {
       const product1 = screen.getByTestId("product-p1")
       const product2 = screen.getByTestId("product-p2")
       const product3 = screen.getByTestId("product-p3")
-      const addToCartButtonsAtProduct1 = within(product1).getByText("장바구니에 추가")
-      const addToCartButtonsAtProduct2 = within(product2).getByText("장바구니에 추가")
-      const addToCartButtonsAtProduct3 = within(product3).getByText("장바구니에 추가")
+      const handleClickAddToCartButtonsAtProduct1 = within(product1).getByText("장바구니에 추가")
+      const handleClickAddToCartButtonsAtProduct2 = within(product2).getByText("장바구니에 추가")
+      const handleClickAddToCartButtonsAtProduct3 = within(product3).getByText("장바구니에 추가")
 
       // 1. 상품 정보 표시
       expect(product1).toHaveTextContent("상품1")
@@ -98,7 +98,7 @@ describe("advanced > ", () => {
       expect(screen.getByText("10개 이상: 10% 할인")).toBeInTheDocument()
 
       // 3. 상품1 장바구니에 상품 추가
-      fireEvent.click(addToCartButtonsAtProduct1) // 상품1 추가
+      fireEvent.click(handleClickAddToCartButtonsAtProduct1) // 상품1 추가
 
       // 4. 할인율 계산
       expect(screen.getByText("상품 금액: 10,000원")).toBeInTheDocument()
@@ -107,12 +107,12 @@ describe("advanced > ", () => {
 
       // 5. 상품 품절 상태로 만들기
       for (let i = 0; i < 19; i++) {
-        fireEvent.click(addToCartButtonsAtProduct1)
+        fireEvent.click(handleClickAddToCartButtonsAtProduct1)
       }
 
       // 6. 품절일 때 상품 추가 안 되는지 확인하기
       expect(product1).toHaveTextContent("재고: 0개")
-      fireEvent.click(addToCartButtonsAtProduct1)
+      fireEvent.click(handleClickAddToCartButtonsAtProduct1)
       expect(product1).toHaveTextContent("재고: 0개")
 
       // 7. 할인율 계산
@@ -121,8 +121,8 @@ describe("advanced > ", () => {
       expect(screen.getByText("최종 결제 금액: 180,000원")).toBeInTheDocument()
 
       // 8. 상품을 각각 10개씩 추가하기
-      fireEvent.click(addToCartButtonsAtProduct2) // 상품2 추가
-      fireEvent.click(addToCartButtonsAtProduct3) // 상품3 추가
+      fireEvent.click(handleClickAddToCartButtonsAtProduct2) // 상품2 추가
+      fireEvent.click(handleClickAddToCartButtonsAtProduct3) // 상품3 추가
 
       const increaseButtons = screen.getAllByText("+")
       for (let i = 0; i < 9; i++) {

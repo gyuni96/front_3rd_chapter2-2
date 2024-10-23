@@ -7,7 +7,7 @@ export const useToggle = () => {
    * 상품 아코디언 토글
    * @param productId
    */
-  const toggleProductAccordion = (productId: string) => {
+  const handleClickToggleProduct = (productId: string) => {
     setOpenProductIds((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(productId)) {
@@ -19,5 +19,5 @@ export const useToggle = () => {
     })
   }
 
-  return { openProductIds, toggleProductAccordion }
+  return { openProductIds, handleClickToggleProduct }
 }

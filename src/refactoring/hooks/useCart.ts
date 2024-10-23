@@ -11,7 +11,7 @@ export const useCart = () => {
    * 장바구니 상품 추가
    * @param product
    */
-  const addToCart = (product: Product) => {
+  const handleClickAddToCart = (product: Product) => {
     setCart((prev) => {
       const existingItem = prev.find((item) => item.product.id === product.id)
       if (existingItem) {
@@ -25,7 +25,7 @@ export const useCart = () => {
    * 장바구니 상품 삭제
    * @param productId
    */
-  const removeFromCart = (productId: string) => {
+  const handleClickRemoveCart = (productId: string) => {
     setCart((prev) => prev.filter((item) => item.product.id !== productId))
   }
 
@@ -34,7 +34,7 @@ export const useCart = () => {
    * @param productId
    * @param newQuantity
    */
-  const updateQuantity = (productId: string, newQuantity: number) => {
+  const handleClickUpdateQuantity = (productId: string, newQuantity: number) => {
     setCart((prev) => updateCartItemQuantity(prev, productId, newQuantity))
   }
 
@@ -42,7 +42,7 @@ export const useCart = () => {
    * 쿠폰 적용
    * @param coupon
    */
-  const applyCoupon = (coupon: Coupon) => {
+  const handleChangeCoupon = (coupon: Coupon) => {
     setSelectedCoupon(coupon)
   }
 
@@ -54,10 +54,10 @@ export const useCart = () => {
 
   return {
     cart,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    applyCoupon,
+    handleClickAddToCart,
+    handleClickRemoveCart,
+    handleClickUpdateQuantity,
+    handleChangeCoupon,
     calculateTotal,
     selectedCoupon,
   }

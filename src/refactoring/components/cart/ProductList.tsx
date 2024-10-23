@@ -4,10 +4,10 @@ import UserProductItem from "./ProductItem"
 type Props = {
   products: Product[]
   cart: CartItem[]
-  addToCart: (product: Product) => void
+  handleClickAddToCart: (product: Product) => void
 }
 
-const ProductList = ({ products, cart, addToCart }: Props) => {
+const ProductList = ({ products, cart, handleClickAddToCart }: Props) => {
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">상품 목록</h2>
@@ -19,7 +19,11 @@ const ProductList = ({ products, cart, addToCart }: Props) => {
               data-testid={`product-${product.id}`}
               className="bg-white p-3 rounded shadow"
             >
-              <UserProductItem product={product} cart={cart} addToCart={addToCart} />
+              <UserProductItem
+                product={product}
+                cart={cart}
+                handleClickAddToCart={handleClickAddToCart}
+              />
             </div>
           )
         })}

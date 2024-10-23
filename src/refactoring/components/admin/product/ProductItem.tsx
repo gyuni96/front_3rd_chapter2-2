@@ -8,13 +8,13 @@ type Props = {
 }
 
 const ProductItem = ({ product, onProductUpdate }: Props) => {
-  const { openProductIds, toggleProductAccordion } = useToggle()
+  const { openProductIds, handleClickToggleProduct } = useToggle()
 
   return (
     <>
       <button
         data-testid="toggle-button"
-        onClick={() => toggleProductAccordion(product.id)}
+        onClick={() => handleClickToggleProduct(product.id)}
         className="w-full text-left font-semibold"
       >
         {product.name} - {product.price}원 (재고: {product.stock})

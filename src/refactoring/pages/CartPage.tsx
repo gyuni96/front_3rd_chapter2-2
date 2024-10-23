@@ -13,10 +13,10 @@ interface Props {
 export const CartPage = ({ products, coupons }: Props) => {
   const {
     cart,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    applyCoupon,
+    handleClickAddToCart,
+    handleClickRemoveCart,
+    handleClickUpdateQuantity,
+    handleChangeCoupon,
     calculateTotal,
     selectedCoupon,
   } = useCart()
@@ -27,7 +27,7 @@ export const CartPage = ({ products, coupons }: Props) => {
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">장바구니</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ProductList products={products} cart={cart} addToCart={addToCart} />
+        <ProductList products={products} cart={cart} handleClickAddToCart={handleClickAddToCart} />
         <div>
           <h2 className="text-2xl font-semibold mb-4">장바구니 내역</h2>
           <div className="space-y-2">
@@ -39,8 +39,8 @@ export const CartPage = ({ products, coupons }: Props) => {
                 >
                   <UserCartItem
                     item={item}
-                    updateQuantity={updateQuantity}
-                    removeFromCart={removeFromCart}
+                    handleClickUpdateQuantity={handleClickUpdateQuantity}
+                    handleClickRemoveCart={handleClickRemoveCart}
                   />
                 </div>
               )
@@ -49,7 +49,7 @@ export const CartPage = ({ products, coupons }: Props) => {
 
           <div className="mt-6 bg-white p-4 rounded shadow">
             <h2 className="text-2xl font-semibold mb-2">쿠폰 적용</h2>
-            <CouponSelect coupons={coupons} applyCoupon={applyCoupon} />
+            <CouponSelect coupons={coupons} handleChangeCoupon={handleChangeCoupon} />
             {selectedCoupon && (
               <p className="text-green-600">
                 적용된 쿠폰: {selectedCoupon.name}(

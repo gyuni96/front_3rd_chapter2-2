@@ -5,13 +5,13 @@ import { getMaxDiscount, getRemainingStock } from "../../hooks/utils/cartUtils"
 type Props = {
   product: Product
   cart: CartItem[]
-  addToCart: (product: Product) => void
+  handleClickAddToCart: (product: Product) => void
 }
 
-const UserProductItem = ({ product, cart, addToCart }: Props) => {
+const UserProductItem = ({ product, cart, handleClickAddToCart }: Props) => {
   const [remainingStock, setRemainingStock] = useState(0)
 
-  useEffect(() => setRemainingStock(getRemainingStock(cart, product)), [addToCart])
+  useEffect(() => setRemainingStock(getRemainingStock(cart, product)), [handleClickAddToCart])
 
   return (
     <>
@@ -39,7 +39,7 @@ const UserProductItem = ({ product, cart, addToCart }: Props) => {
         </ul>
       )}
       <button
-        onClick={() => addToCart(product)}
+        onClick={() => handleClickAddToCart(product)}
         className={`w-full px-3 py-1 rounded ${
           remainingStock > 0
             ? "bg-blue-500 text-white hover:bg-blue-600"

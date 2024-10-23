@@ -8,9 +8,9 @@ export const useCoupons = (initialCoupons: Coupon[]) => {
    * 쿠폰 추가
    * @param coupon
    */
-  const addCoupon = (coupon: Coupon) => {
+  const handleClickAddCoupon = (coupon: Coupon) => {
     setCoupons((prev) => [...prev, coupon])
   }
 
-  return { coupons, addCoupon }
+  return { coupons, handleClickAddCoupon }
 }

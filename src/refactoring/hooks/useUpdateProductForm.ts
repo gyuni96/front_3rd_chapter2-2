@@ -33,7 +33,7 @@ export const useUpdateProductForm = (
    * 수정 완료
    * @returns
    */
-  const completeModify = () => {
+  const handleClickCompleteModify = () => {
     const { name, price, stock } = formData
 
     if (!name || !price || !stock) {
@@ -51,5 +51,5 @@ export const useUpdateProductForm = (
     setEditMode((prev) => !prev)
   }
 
-  return { isEdit, formData, updateFormData, completeModify, toggleEditMode }
+  return { isEdit, formData, updateFormData, handleClickCompleteModify, toggleEditMode }
 }

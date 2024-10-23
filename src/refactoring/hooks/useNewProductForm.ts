@@ -10,7 +10,7 @@ export const useNewProductForm = () => {
    * @param key
    * @param value
    */
-  const updateNewProductForm = <K extends keyof Product>(key: K, value: Product[K]) => {
+  const handleChangeUpdateNewProductForm = <K extends keyof Product>(key: K, value: Product[K]) => {
     setNewProductForm((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -20,5 +20,5 @@ export const useNewProductForm = () => {
    */
   const resetNewProductForm = () => setNewProductForm(initProduct)
 
-  return { newProductForm, updateNewProductForm, resetNewProductForm }
+  return { newProductForm, handleChangeUpdateNewProductForm, resetNewProductForm }
 }

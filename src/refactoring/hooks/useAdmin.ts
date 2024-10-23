@@ -6,9 +6,9 @@ export const useAdmin = () => {
   /**
    * 어드민 모드 토글
    */
-  const toggleAdmin = () => {
+  const handleClickToggleAdmin = () => {
     setAdmin((prev) => !prev)
   }
 
-  return { isAdmin, toggleAdmin }
+  return { isAdmin, handleClickToggleAdmin }
 }

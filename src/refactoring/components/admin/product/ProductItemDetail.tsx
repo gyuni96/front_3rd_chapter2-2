@@ -9,10 +9,8 @@ type Props = {
 }
 
 const ProductItemDetail = ({ product, onProductUpdate }: Props) => {
-  const { isEdit, formData, updateFormData, completeModify, toggleEditMode } = useUpdateProductForm(
-    product,
-    onProductUpdate
-  )
+  const { isEdit, formData, updateFormData, handleClickCompleteModify, toggleEditMode } =
+    useUpdateProductForm(product, onProductUpdate)
 
   return (
     <>
@@ -22,7 +20,7 @@ const ProductItemDetail = ({ product, onProductUpdate }: Props) => {
       <DiscountList product={product} isEdit={isEdit} onProductUpdate={onProductUpdate} />
       {isEdit ? (
         <button
-          onClick={completeModify}
+          onClick={handleClickCompleteModify}
           className="text-white px-2 py-1 rounded bg-green-500 hover:bg-green-600 mt-2"
         >
           수정 완료

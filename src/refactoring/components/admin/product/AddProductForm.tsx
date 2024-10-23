@@ -8,7 +8,8 @@ type Props = {
 }
 
 const AddProductForm = ({ onProductAdd, setShowNewProductForm }: Props) => {
-  const { newProductForm, updateNewProductForm, resetNewProductForm } = useNewProductForm()
+  const { newProductForm, handleChangeUpdateNewProductForm, resetNewProductForm } =
+    useNewProductForm()
 
   const handleAddNewProduct = () => {
     const { name, price, stock } = newProductForm
@@ -26,7 +27,7 @@ const AddProductForm = ({ onProductAdd, setShowNewProductForm }: Props) => {
         type="text"
         value={newProductForm.name}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          updateNewProductForm("name", e.target.value)
+          handleChangeUpdateNewProductForm("name", e.target.value)
         }
       />
       <LabelInput
@@ -35,7 +36,7 @@ const AddProductForm = ({ onProductAdd, setShowNewProductForm }: Props) => {
         type="number"
         value={newProductForm.price}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          updateNewProductForm("price", +e.target.value)
+          handleChangeUpdateNewProductForm("price", +e.target.value)
         }
       />
       <LabelInput
@@ -44,7 +45,7 @@ const AddProductForm = ({ onProductAdd, setShowNewProductForm }: Props) => {
         type="number"
         value={newProductForm.stock}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          updateNewProductForm("stock", +e.target.value)
+          handleChangeUpdateNewProductForm("stock", +e.target.value)
         }
       />
       <button

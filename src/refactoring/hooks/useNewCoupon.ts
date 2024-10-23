@@ -19,14 +19,14 @@ export const useNewCoupon = ({ onCouponAdd }: Props) => {
    * @param key
    * @param value
    */
-  const updateNewCoupon = <K extends keyof Coupon>(key: K, value: Coupon[K]) => {
+  const handleChangeUpdateNewCoupon = <K extends keyof Coupon>(key: K, value: Coupon[K]) => {
     setNewCoupon((prev) => updateValue(prev, key, value))
   }
 
   /**
    * 쿠폰 추가
    */
-  const handleAddCoupon = () => {
+  const handleClickAddCoupon = () => {
     onCouponAdd(newCoupon)
     setNewCoupon({
       name: "",
@@ -36,5 +36,5 @@ export const useNewCoupon = ({ onCouponAdd }: Props) => {
     })
   }
 
-  return { newCoupon, updateNewCoupon, handleAddCoupon }
+  return { newCoupon, handleChangeUpdateNewCoupon, handleClickAddCoupon }
 }
