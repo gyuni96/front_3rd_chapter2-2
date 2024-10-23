@@ -1,17 +1,22 @@
 import { Product } from "../../../../types"
+import { useNewProductForm } from "../../../hooks"
 import LabelInput from "./LabelInput"
 
 type Props = {
-  newProductForm: {
-    name: string
-    price: number
-    stock: number
-  }
-  handleFormData: (key: keyof Omit<Product, "id" | "discounts">, value: string | number) => void
-  handleAddNewProduct: (newProduct: { name: string; price: number; stock: number }) => void
+  onProductAdd: (newProduct: Product) => void
+  setShowNewProductForm(show: boolean): void
 }
 
-const AddItemForm = ({ newProductForm, handleFormData, handleAddNewProduct }: Props) => {
+const AddProductForm = ({ onProductAdd, setShowNewProductForm }: Props) => {
+  const { newProductForm, updateNewProductForm, resetNewProductForm } = useNewProductForm()
+
+  const handleAddNewProduct = () => {
+    const { name, price, stock } = newProductForm
+    onProductAdd({ id: name, name, price, stock, discounts: [] })
+    setShowNewProductForm(false)
+    resetNewProductForm()
+  }
+
   return (
     <div className="bg-white p-4 rounded shadow mb-4">
       <h3 className="text-xl font-semibold mb-2">새 상품 추가</h3>
@@ -21,7 +26,7 @@ const AddItemForm = ({ newProductForm, handleFormData, handleAddNewProduct }: Pr
         type="text"
         value={newProductForm.name}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          handleFormData("name", e.target.value)
+          updateNewProductForm("name", e.target.value)
         }
       />
       <LabelInput
@@ -30,7 +35,7 @@ const AddItemForm = ({ newProductForm, handleFormData, handleAddNewProduct }: Pr
         type="number"
         value={newProductForm.price}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          handleFormData("price", +e.target.value)
+          updateNewProductForm("price", +e.target.value)
         }
       />
       <LabelInput
@@ -39,11 +44,11 @@ const AddItemForm = ({ newProductForm, handleFormData, handleAddNewProduct }: Pr
         type="number"
         value={newProductForm.stock}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          handleFormData("stock", +e.target.value)
+          updateNewProductForm("stock", +e.target.value)
         }
       />
       <button
-        onClick={() => handleAddNewProduct(newProductForm)}
+        onClick={handleAddNewProduct}
         className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
       >
         추가
@@ -52,4 +57,4 @@ const AddItemForm = ({ newProductForm, handleFormData, handleAddNewProduct }: Pr
   )
 }
 
-export default AddItemForm
+export default AddProductForm

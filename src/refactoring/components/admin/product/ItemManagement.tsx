@@ -1,4 +1,4 @@
-import AddItem from "./AddItem"
+import AddProduct from "./AddProduct"
 import { Product } from "../../../../types"
 import ProductList from "./ProductList"
 
@@ -12,7 +12,7 @@ const ItemManagement = ({ products, onProductAdd, onProductUpdate }: Props) => {
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">상품 관리</h2>
-      <AddItem onProductAdd={onProductAdd} />
+      <AddProduct onProductAdd={onProductAdd} />
       <ProductList products={products} onProductUpdate={onProductUpdate} />
     </div>
   )

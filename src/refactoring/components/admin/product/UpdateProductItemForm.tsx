@@ -2,7 +2,7 @@ import LabelInput from "./LabelInput"
 
 type Props = {
   formData: FormDataType
-  updateFormData: (key: string, value: string | number) => void
+  updateFormData: <K extends keyof FormDataType>(key: K, value: FormDataType[K]) => void
 }
 
 type FormDataType = {
