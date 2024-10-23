@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Coupon, Discount, Product } from "../../types.ts"
-import ItemManagement from "../components/admin/ItemManagement.tsx"
+import ItemManagement from "../components/admin/product/ItemManagement.tsx"
 
 interface Props {
   products: Product[]
@@ -23,14 +23,6 @@ export const AdminPage = ({
     discountType: "percentage",
     discountValue: 0,
   })
-
-  // handleEditProduct 함수 수정
-
-  // 새로운 핸들러 함수 추가
-
-  // 새로운 핸들러 함수 추가
-
-  // 수정 완료 핸들러 함수 추가
 
   const handleAddCoupon = () => {
     onCouponAdd(newCoupon)

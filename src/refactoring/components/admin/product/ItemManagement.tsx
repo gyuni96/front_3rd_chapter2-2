@@ -1,5 +1,5 @@
 import AddItem from "./AddItem"
-import { Product } from "../../../types"
+import { Product } from "../../../../types"
 import ProductList from "./ProductList"
 
 type Props = {
