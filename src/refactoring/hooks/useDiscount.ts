@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Discount, Product } from "../../types"
+import { validationDiscount } from "./utils/adminUtils"
 
 const initDiscount: Discount = { quantity: 0, rate: 0 }
 
@@ -11,16 +12,7 @@ export const useDiscount = (product: Product, onProductUpdate: (newProduct: Prod
    * @returns
    */
   const handleClickAddDiscount = () => {
-    if (newDiscount.quantity <= 0) {
-      return newDiscount.quantity === 0
-        ? alert("수량 정보를 입력해주세요.")
-        : alert("수량 정보는 0보다 커야합니다.")
-    }
-    if (newDiscount.rate <= 0) {
-      return newDiscount.rate === 0
-        ? alert("할인 정보를 입력해주세요.")
-        : alert("할인 정보는 0보다 커야합니다.")
-    }
+    if (!validationDiscount(newDiscount)) return
 
     const newProduct = { ...product }
 

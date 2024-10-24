@@ -1,9 +1,13 @@
 import { useState } from "react"
-import { describe, expect, test } from "vitest"
-import { act, fireEvent, render, screen, within } from "@testing-library/react"
+import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest"
+import { act, fireEvent, render, renderHook, screen, within } from "@testing-library/react"
 import { CartPage } from "../../refactoring/pages/CartPage"
 import { AdminPage } from "../../refactoring/pages/AdminPage"
-import { Coupon, Product } from "../../types"
+import { Coupon, Discount, Product } from "../../types"
+import { validationDiscount } from "../../refactoring/hooks/utils/adminUtils"
+import { useLocalStorage } from "../../refactoring/hooks/useLocalStorage"
+import { isValidCoupon } from "../../refactoring/hooks/utils/cartUtils"
+import { useDiscount, useToggle } from "../../refactoring/hooks"
 
 const mockProducts: Product[] = [
   {
@@ -230,11 +234,181 @@ describe("advanced > ", () => {
 
   describe("자유롭게 작성해보세요.", () => {
     test("새로운 유틸 함수를 만든 후에 테스트 코드를 작성해서 실행해보세요", () => {
-      expect(true).toBe(false)
+      describe("validateDiscount >", () => {
+        test("유효한 할인 정보를 검증해야 합니다", () => {
+          const validDiscount = mockProducts[0].discounts[0]
+          expect(validDiscount).toEqual({ quantity: 10, rate: 0.1 })
+          expect(validationDiscount(validDiscount)).toBe(true)
+        })
+
+        test("수량이 0 이하면 false를 반환해야 합니다", () => {
+          const invalidDiscount: Discount = {
+            ...mockProducts[0].discounts[0],
+            quantity: 0,
+          }
+          expect(validationDiscount(invalidDiscount)).toBe(false)
+        })
+
+        test("할인율이 0 이하면 false를 반환해야 합니다", () => {
+          const invalidDiscount: Discount = {
+            ...mockProducts[0].discounts[0],
+            rate: 0,
+          }
+          expect(validationDiscount(invalidDiscount)).toBe(false)
+        })
+
+        test("할인율이 1 초과면 false를 반환해야 합니다", () => {
+          const invalidDiscount: Discount = {
+            ...mockProducts[0].discounts[0],
+            rate: 1.1,
+          }
+          expect(validationDiscount(invalidDiscount)).toBe(false)
+        })
+      })
+
+      describe("isValidCoupon > ", () => {
+        test("유효한 쿠폰 정보를 검증해야 합니다", () => {
+          const validCoupon = mockCoupons[0]
+          expect(validCoupon).toEqual({
+            name: "5000원 할인 쿠폰",
+            code: "AMOUNT5000",
+            discountType: "amount",
+            discountValue: 5000,
+          })
+          expect(isValidCoupon(validCoupon)).toBe(true)
+        })
+
+        test("할인 금액이 0 이하면 false를 반환해야 합니다", () => {
+          const invalidCoupon: Coupon = {
+            ...mockCoupons[0],
+            discountValue: 0,
+          }
+          expect(isValidCoupon(invalidCoupon)).toBe(false)
+        })
+
+        test("할인율이 0 이하면 false를 반환해야 합니다", () => {
+          const invalidCoupon: Coupon = {
+            ...mockCoupons[1],
+            discountValue: -1,
+          }
+          expect(isValidCoupon(invalidCoupon)).toBe(false)
+        })
+      })
     })
 
     test("새로운 hook 함수르 만든 후에 테스트 코드를 작성해서 실행해보세요", () => {
-      expect(true).toBe(false)
+      describe("useDiscount >", () => {
+        test("할인 추가 버튼을 클릭하면 할인이 추가되어야 합니다", () => {
+          const onProductUpdate = vi.fn()
+          const { result } = renderHook(() => useDiscount(mockProducts[0], onProductUpdate))
+          act(() => {
+            result.current.handleClickAddDiscount()
+          })
+          expect(onProductUpdate).toHaveBeenCalled()
+        })
+
+        test("할인 수량을 변경하면 할인이 변경되어야 합니다", () => {
+          const onProductUpdate = vi.fn()
+          const { result } = renderHook(() => useDiscount(mockProducts[0], onProductUpdate))
+          act(() => {
+            result.current.handleChangeQuantity({
+              target: { value: "5" },
+            } as unknown as React.ChangeEvent<HTMLInputElement>)
+            expect(onProductUpdate).toHaveBeenCalled()
+          })
+        })
+
+        test("할인율을 변경하면 할인이 변경되어야 합니다", () => {
+          const onProductUpdate = vi.fn()
+          const { result } = renderHook(() => useDiscount(mockProducts[0], onProductUpdate))
+          act(() => {
+            result.current.handleChangeRate({
+              target: { value: "20" },
+            } as unknown as React.ChangeEvent<HTMLInputElement>)
+            expect(onProductUpdate).toHaveBeenCalled()
+          })
+        })
+      })
+
+      describe("useToggle >", () => {
+        test("화면이 오픈되어야된다", () => {
+          const { result } = renderHook(() => useToggle())
+          act(() => {
+            result.current.handleClickToggleProduct(mockProducts[0].id)
+          })
+          expect(result.current.openProductIds.has(mockProducts[0].id)).toBe(true)
+        })
+      })
+
+      describe("useLocalStorage >", () => {
+        // localStorage Mock
+        const localStorageMock = {
+          store: {} as { [key: string]: string },
+          getItem: vi.fn((key: string) => localStorageMock.store[key] ?? null),
+          setItem: vi.fn((key: string, value: string) => {
+            localStorageMock.store[key] = value
+          }),
+          removeItem: vi.fn((key: string) => {
+            delete localStorageMock.store[key]
+          }),
+          clear: vi.fn(() => {
+            localStorageMock.store = {}
+          }),
+        }
+
+        beforeAll(() => {
+          Object.defineProperty(window, "localStorage", {
+            value: localStorageMock,
+          })
+        })
+
+        beforeEach(() => {
+          localStorageMock.clear()
+          vi.clearAllMocks()
+        })
+
+        test("초기값으로 시작해야 합니다", () => {
+          const { result } = renderHook(() => useLocalStorage("test-key", "initial"))
+          expect(result.current[0]).toBe("initial")
+        })
+
+        test("값을 저장하고 읽을 수 있어야 합니다", () => {
+          const { result } = renderHook(() => useLocalStorage("test-key", ""))
+
+          act(() => {
+            result.current[1]("new value")
+          })
+
+          expect(result.current[0]).toBe("new value")
+          expect(localStorageMock.setItem).toHaveBeenCalledWith(
+            "test-key",
+            JSON.stringify("new value")
+          )
+        })
+
+        test("함수형 업데이트가 동작해야 합니다", () => {
+          const { result } = renderHook(() => useLocalStorage<number>("test-key", 0))
+
+          act(() => {
+            result.current[1]((prev) => prev + 1)
+          })
+
+          expect(result.current[0]).toBe(1)
+          expect(localStorageMock.setItem).toHaveBeenCalledWith("test-key", JSON.stringify(1))
+        })
+
+        test("removeValue로 값을 제거할 수 있어야 합니다", () => {
+          const { result } = renderHook(() => useLocalStorage("test-key", "initial"))
+
+          act(() => {
+            result.current[1]("new value")
+            // result.current[2]() // removeValue 호출
+          })
+
+          expect(result.current[0]).toBe("initial") // 초기값으로 리셋
+          expect(localStorageMock.removeItem).toHaveBeenCalledWith("test-key")
+        })
+      })
     })
   })
 })

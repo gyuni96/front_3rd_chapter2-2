@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Coupon } from "../../types"
 import { updateValue } from "./utils/commonUtils"
+import { isValidCoupon } from "./utils/cartUtils"
 
 type Props = {
   onCouponAdd: (newCoupon: Coupon) => void
@@ -27,6 +28,7 @@ export const useNewCoupon = ({ onCouponAdd }: Props) => {
    * 쿠폰 추가
    */
   const handleClickAddCoupon = () => {
+    if (!isValidCoupon(newCoupon)) return
     onCouponAdd(newCoupon)
     setNewCoupon({
       name: "",

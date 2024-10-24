@@ -8,15 +8,8 @@ type Props = {
 }
 
 const AddProductForm = ({ onProductAdd, setShowNewProductForm }: Props) => {
-  const { newProductForm, handleChangeUpdateNewProductForm, resetNewProductForm } =
-    useNewProductForm()
-
-  const handleAddNewProduct = () => {
-    const { name, price, stock } = newProductForm
-    onProductAdd({ id: name, name, price, stock, discounts: [] })
-    setShowNewProductForm(false)
-    resetNewProductForm()
-  }
+  const { newProductForm, handleChangeUpdateNewProductForm, handleAddNewProduct } =
+    useNewProductForm(onProductAdd, setShowNewProductForm)
 
   return (
     <div className="bg-white p-4 rounded shadow mb-4">

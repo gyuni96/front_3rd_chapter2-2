@@ -2,7 +2,10 @@ import { useState } from "react"
 import { Product } from "../../types"
 import { initProduct } from "../constants/initialData"
 
-export const useNewProductForm = () => {
+export const useNewProductForm = (
+  onProductAdd: (newProduct: Product) => void,
+  setShowNewProductForm: (show: boolean) => void
+) => {
   const [newProductForm, setNewProductForm] = useState<Omit<Product, "id">>(initProduct)
 
   /**
@@ -20,5 +23,17 @@ export const useNewProductForm = () => {
    */
   const resetNewProductForm = () => setNewProductForm(initProduct)
 
-  return { newProductForm, handleChangeUpdateNewProductForm, resetNewProductForm }
+  const handleAddNewProduct = () => {
+    const { name, price, stock } = newProductForm
+    onProductAdd({ id: name, name, price, stock, discounts: [] })
+    setShowNewProductForm(false)
+    resetNewProductForm()
+  }
+
+  return {
+    newProductForm,
+    handleChangeUpdateNewProductForm,
+    resetNewProductForm,
+    handleAddNewProduct,
+  }
 }

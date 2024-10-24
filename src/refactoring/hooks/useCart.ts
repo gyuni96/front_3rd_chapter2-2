@@ -1,17 +1,23 @@
 // useCart.ts
-import { useState } from "react"
 import { CartItem, Coupon, Product } from "../../types"
-import { calculateCartTotal, updateCartItemQuantity } from "./utils/cartUtils"
+import { calculateCartTotal, getRemainingStock, updateCartItemQuantity } from "./utils/cartUtils"
+import { useLocalStorage } from "./useLocalStorage"
 
 export const useCart = () => {
-  const [cart, setCart] = useState<CartItem[]>([])
-  const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null)
+  const [cart, setCart] = useLocalStorage<CartItem[]>("shopping-cart", [])
+  const [selectedCoupon, setSelectedCoupon] = useLocalStorage<Coupon | null>(
+    "selected-coupon",
+    null
+  )
 
   /**
    * 장바구니 상품 추가
    * @param product
    */
   const handleClickAddToCart = (product: Product) => {
+    const remainingStock = getRemainingStock(cart, product)
+    if (remainingStock <= 0) return
+
     setCart((prev) => {
       const existingItem = prev.find((item) => item.product.id === product.id)
       if (existingItem) {

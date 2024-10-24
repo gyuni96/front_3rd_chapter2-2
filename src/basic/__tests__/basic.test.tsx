@@ -1,11 +1,12 @@
 import { useState } from "react"
-import { describe, expect, test } from "vitest"
+import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest"
 import { act, fireEvent, render, renderHook, screen, within } from "@testing-library/react"
 import { CartPage } from "../../refactoring/pages/CartPage"
 import { AdminPage } from "../../refactoring/pages/AdminPage"
 import { CartItem, Coupon, Product } from "../../types"
 import { useCart, useCoupons, useProducts } from "../../refactoring/hooks"
 import * as cartUtils from "../../refactoring/hooks/utils/cartUtils"
+import CouponSelect from "../../refactoring/components/cart/CouponSelect"
 
 const mockProducts: Product[] = [
   {
@@ -44,6 +45,30 @@ const mockCoupons: Coupon[] = [
     discountValue: 10,
   },
 ]
+// localStorage Mock
+const localStorageMock = {
+  store: {} as { [key: string]: string },
+  getItem: vi.fn((key: string) => localStorageMock.store[key] ?? null),
+  setItem: vi.fn((key: string, value: string) => {
+    localStorageMock.store[key] = value
+  }),
+  removeItem: vi.fn((key: string) => {
+    delete localStorageMock.store[key]
+  }),
+  clear: vi.fn(() => {
+    localStorageMock.store = {}
+  }),
+}
+beforeAll(() => {
+  Object.defineProperty(window, "localStorage", {
+    value: localStorageMock,
+  })
+})
+
+beforeEach(() => {
+  localStorageMock.clear()
+  vi.clearAllMocks()
+})
 
 const TestAdminPage = () => {
   const [products, setProducts] = useState<Product[]>(mockProducts)
@@ -441,6 +466,10 @@ describe("basic > ", () => {
 
       act(() => {
         result.current.handleClickAddToCart(testProduct)
+        // result.current.handleClickUpdateQuantity(testProduct.id, 5)
+      })
+
+      act(() => {
         result.current.handleClickUpdateQuantity(testProduct.id, 5)
       })
 
@@ -462,6 +491,9 @@ describe("basic > ", () => {
 
       act(() => {
         result.current.handleClickAddToCart(testProduct)
+      })
+
+      act(() => {
         result.current.handleClickUpdateQuantity(testProduct.id, 2)
         result.current.handleChangeCoupon(testCoupon)
       })

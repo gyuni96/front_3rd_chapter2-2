@@ -5,7 +5,7 @@ import { CartItem, Coupon, Product } from "../../../types"
  * @param item
  * @returns
  */
-export const calculateItemTotal = (item: CartItem) => {
+export function calculateItemTotal(item: CartItem) {
   const { price } = item.product
   const { quantity } = item
   const discount = getMaxApplicableDiscount(item)
@@ -18,7 +18,7 @@ export const calculateItemTotal = (item: CartItem) => {
  * @param item
  * @returns
  */
-export const getMaxApplicableDiscount = (item: CartItem) => {
+export function getMaxApplicableDiscount(item: CartItem) {
   const { discounts } = item.product
   const { quantity } = item
 
@@ -36,7 +36,7 @@ export const getMaxApplicableDiscount = (item: CartItem) => {
  * @param selectedCoupon
  * @returns
  */
-export const calculateCartTotal = (cart: CartItem[], selectedCoupon: Coupon | null) => {
+export function calculateCartTotal(cart: CartItem[], selectedCoupon: Coupon | null) {
   const totalBeforeDiscount = cart.reduce((total, item) => {
     return total + item.product.price * item.quantity
   }, 0)
@@ -70,33 +70,33 @@ export const calculateCartTotal = (cart: CartItem[], selectedCoupon: Coupon | nu
  * @param newQuantity
  * @returns
  */
-export const updateCartItemQuantity = (
+export function updateCartItemQuantity(
   cart: CartItem[],
   productId: string,
   newQuantity: number
-): CartItem[] => {
-  if (newQuantity === 0) {
-    // 수량이 0이면 삭제
-    return cart.filter((item) => item.product.id !== productId)
-  }
-
-  return cart.map((item) =>
-    item.product.id === productId
-      ? { ...item, quantity: Math.min(newQuantity, item.product.stock) }
-      : item
-  )
+): CartItem[] {
+  return [...cart]
+    .map((item) => {
+      if (item.product.id === productId) {
+        const maxQuantity = item.product.stock
+        const updatedQuantity = Math.max(0, Math.min(newQuantity, maxQuantity))
+        return updatedQuantity > 0 ? { ...item, quantity: updatedQuantity } : null
+      }
+      return item
+    })
+    .filter((item): item is CartItem => item !== null)
 }
 
-export const getMaxDiscount = (discounts: { quantity: number; rate: number }[]) => {
+export function getMaxDiscount(discounts: { quantity: number; rate: number }[]) {
   return discounts.reduce((max, discount) => Math.max(max, discount.rate), 0)
 }
 
-export const getRemainingStock = (cart: CartItem[], product: Product) => {
+export function getRemainingStock(cart: CartItem[], product: Product) {
   const cartItem = cart.find((item) => item.product.id === product.id)
   return product.stock - (cartItem?.quantity || 0)
 }
 
-export const getAppliedDiscount = (item: CartItem) => {
+export function getAppliedDiscount(item: CartItem) {
   const { discounts } = item.product
   const { quantity } = item
   let appliedDiscount = 0
@@ -106,4 +106,8 @@ export const getAppliedDiscount = (item: CartItem) => {
     }
   }
   return appliedDiscount
+}
+
+export function isValidCoupon(coupon: Coupon) {
+  return coupon.name !== "" && coupon.code !== "" && coupon.discountValue !== 0
 }
