@@ -30,16 +30,20 @@ export function getMaxApplicableDiscount(item: CartItem) {
   return discount
 }
 
+const totalSumPrice = (cart: CartItem[]) => {
+  return cart.reduce((total, item) => {
+    return total + item.product.price * item.quantity
+  }, 0)
+}
+
 /**
  * 장바구니 총 가격 계산
  * @param cart
  * @param selectedCoupon
  * @returns
  */
-export function calculateCartTotal(cart: CartItem[], selectedCoupon: Coupon | null) {
-  const totalBeforeDiscount = cart.reduce((total, item) => {
-    return total + item.product.price * item.quantity
-  }, 0)
+export const calculateCartTotal = (cart: CartItem[], selectedCoupon: Coupon | null) => {
+  const totalBeforeDiscount = totalSumPrice(cart)
 
   let totalAfterDiscount = cart.reduce((total, item) => {
     return total + calculateItemTotal(item)

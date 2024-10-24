@@ -6,8 +6,12 @@ import { AdminPage } from "../../refactoring/pages/AdminPage"
 import { Coupon, Discount, Product } from "../../types"
 import { validationDiscount } from "../../refactoring/hooks/utils/adminUtils"
 import { useLocalStorage } from "../../refactoring/hooks/useLocalStorage"
-import { isValidCoupon } from "../../refactoring/hooks/utils/cartUtils"
-import { useDiscount, useToggle } from "../../refactoring/hooks"
+import {
+  calculateItemTotal,
+  getRemainingStock,
+  isValidCoupon,
+} from "../../refactoring/hooks/utils/cartUtils"
+import { useDiscount, useNewCoupon, useToggle } from "../../refactoring/hooks"
 
 const mockProducts: Product[] = [
   {
@@ -294,6 +298,39 @@ describe("advanced > ", () => {
           expect(isValidCoupon(invalidCoupon)).toBe(false)
         })
       })
+
+      describe("getRemainingStock > ", () => {
+        test("카트에 담긴 상품의 재고를 확인할 수 있어야 합니다", () => {
+          const cart = [
+            { product: mockProducts[0], quantity: 5 },
+            { product: mockProducts[1], quantity: 10 },
+          ]
+          expect(getRemainingStock(cart, mockProducts[0])).toBe(15)
+          expect(getRemainingStock(cart, mockProducts[1])).toBe(10)
+        })
+        test("카트에 담기지 않은 상품은 재고가 그대로여야 합니다", () => {
+          const cart = [
+            { product: mockProducts[0], quantity: 5 },
+            { product: mockProducts[1], quantity: 10 },
+          ]
+          expect(getRemainingStock(cart, mockProducts[2])).toBe(20)
+        })
+        test("카트에 담긴 상품이 없으면 재고가 그대로여야 합니다", () => {
+          const cart = []
+          expect(getRemainingStock(cart, mockProducts[0])).toBe(20)
+        })
+      })
+
+      describe("calculateItemTotal > ", () => {
+        test("상품 가격을 계산할 수 있어야 합니다", () => {
+          const cartItem = { product: mockProducts[0], quantity: 5 }
+          expect(calculateItemTotal(cartItem)).toBe(50000)
+        })
+        test("할인이 적용된 가격을 계산할 수 있어야 합니다", () => {
+          const cartItem = { product: mockProducts[0], quantity: 10 }
+          expect(calculateItemTotal(cartItem)).toBe(90000)
+        })
+      })
     })
 
     test("새로운 hook 함수르 만든 후에 테스트 코드를 작성해서 실행해보세요", () => {
@@ -407,6 +444,54 @@ describe("advanced > ", () => {
 
           expect(result.current[0]).toBe("initial") // 초기값으로 리셋
           expect(localStorageMock.removeItem).toHaveBeenCalledWith("test-key")
+        })
+      })
+
+      describe("useNewCoupon >", () => {
+        test("쿠폰 추가 버튼을 클릭하면 쿠폰이 추가되어야 합니다", () => {
+          const onCouponAdd = vi.fn()
+          const { result } = renderHook(() => useNewCoupon({ onCouponAdd }))
+          act(() => {
+            result.current.handleClickAddCoupon()
+          })
+          expect(onCouponAdd).toHaveBeenCalled()
+        })
+
+        test("쿠폰 이름을 변경하면 쿠폰이 변경되어야 합니다", () => {
+          const onCouponAdd = vi.fn()
+          const { result } = renderHook(() => useNewCoupon({ onCouponAdd }))
+          act(() => {
+            result.current.handleChangeUpdateNewCoupon("name", "new coupon")
+          })
+          expect(result.current.newCoupon.name).toBe("new coupon")
+        })
+
+        test("쿠폰 코드를 변경하면 쿠폰이 변경되어야 합니다", () => {
+          const onCouponAdd = vi.fn()
+          const { result } = renderHook(() => useNewCoupon({ onCouponAdd }))
+          act(() => {
+            result.current.handleChangeUpdateNewCoupon("code", "NEW10")
+          })
+          expect(result.current.newCoupon.code).toBe("NEW10")
+        })
+
+        test("쿠폰 할인율을 변경하면 쿠폰이 변경되어야 합니다", () => {
+          const onCouponAdd = vi.fn()
+          const { result } = renderHook(() => useNewCoupon({ onCouponAdd }))
+          act(() => {
+            result.current.handleChangeUpdateNewCoupon("discountValue", 10)
+          })
+          expect(result.current.newCoupon.discountValue).toBe(10)
+        })
+
+        test("유효하지 않은 쿠폰을 추가하면 추가되지 않아야 합니다", () => {
+          const onCouponAdd = vi.fn()
+          const { result } = renderHook(() => useNewCoupon({ onCouponAdd }))
+          act(() => {
+            result.current.handleChangeUpdateNewCoupon("name", "")
+            result.current.handleClickAddCoupon()
+          })
+          expect(onCouponAdd).not.toHaveBeenCalled()
         })
       })
     })
